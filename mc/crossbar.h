@@ -42,7 +42,7 @@ class crossbar
 		crossbarMatrix = rhs.synapses();
 		boolmask = rhs.mask();
 		synapseBits = rhs.synapseSize();
-		score = rhs.score;
+		score = 0;
 		//srand(time(NULL));
 	}
 	VectorXi actFunct(){

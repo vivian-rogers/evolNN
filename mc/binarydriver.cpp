@@ -48,20 +48,23 @@ vector<int> popBest(vector<crossbar> &population, int *score, VectorXi *tempScor
 int synapse = 1;
 int size;
 lookupVector matrixLookup;
-const vector<int> layerBreadth{6,19,5,3}; //size of vector in each layer
+const vector<int> layerBreadth{6,9,8,3}; //size of vector in each layer
 //const vector<int> layerBreadth{6,8,12,12,6,5,3}; //size of vector in each layer
-const int popSize = 50;
-const int numSamples = 10;
-const int numLeaders = 40;
-int mutationSpeed = 4;
+int outSize =layerBreadth.at(layerBreadth.size() -1); 
+const int popSize = 1000;
+const int numSamples = 100;
+const int numLeaders = 250;
+int mutationSpeed = 10;
 VectorXi layerBreadthVect = Map<const VectorXi, Eigen::Unaligned>(layerBreadth.data(), layerBreadth.size());
 int main()
 {
 	srand(time(NULL));
 	vector<crossbar> population(popSize,crossbar(layerBreadth,0,2));
-//	for(int i = 0; i < popSize; i++){
-//		population.at(i).mutate((i % 3) + 1);
-//	}
+	for(int i = 0; i < popSize; i++){
+		population.at(i).mutate(2);
+		population.at(i).mutate(3);
+		population.at(i).mutate(5);
+	}
 //	MatrixXi testttttt;
 	TrainingData data("outfile.csv", 1, layerBreadth.at(0), layerBreadth.at(layerBreadth.size() -1));
 	//crossbar test(layerBreadth,0,2);	
@@ -139,20 +142,21 @@ int main()
 				correctSum += correctnessQueue.at(i);
 			}
 		}
-		cout << "Moving avg error^2: "<< (float) scoreSum / ( scoreQueue.size() * layerBreadth.at(layerBreadth.size() -1)) << "		";
+		cout << "Moving avg error^2: "<< (float) scoreSum / (numSamples*scoreQueue.size() * layerBreadth.at(layerBreadth.size() -1)) << "		";
 		//cout << "Moving correct%: "<< (float) correctSum/scoreQueue.size() << "		";
 		cout << "Best score: "<< scoreQueue.back() << endl;
 		cout << "Sorted Scores:"<< sortedScores.transpose() << endl;
+		//cout << "Sorted Scores:"<< sortedScores.transpose()/(numSamples*outSize) << endl;
 		//cout << "Number correct: {" << numCorrect.transpose() << "}/" << numSamples<<endl <<endl;
 		correctSum = 0;
 		scoreSum = 0;
 		for(int i = numLeaders; i < popSize; i++){
 			//if(rand() % 2 == 0){
-			population.at(sortedPop.at(i)) = population.at(sortedPop.at(rand() % (numLeaders/3)));
+			population.at(sortedPop.at(i)) = population.at(sortedPop.at(rand() % (numLeaders/80)));
 			population.at(sortedPop.at(i)).mutate(mutationRate(generation));
 			//}//population.at(i).score = 0;
 		}
-		if(generation % 100 == 0){
+		if(generation % 50 == 0){
 			randData = rand() % data.size();
 			cout << "Best crossbar array: " <<endl;
 			cout << population.at(sortedPop.at(0)).synapses() << endl <<endl;

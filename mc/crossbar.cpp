@@ -19,7 +19,7 @@ using namespace Eigen;
 
 crossbar::crossbar(vector<int> layerBreadth, int reservoirLayer, int _synapseBits){ //expects a vector of all of the number of neurons in each layer, and the layer number that the reservoir is on. 0 = no reservoir.
 	//goes through and should instantiate eveything
-	//srand(time(NULL));
+	srand(time(NULL));
 	int size = 0;
 	for(int i = 0; i < layerBreadth.size(); i++){
 		size += layerBreadth[i];
@@ -43,21 +43,21 @@ crossbar::crossbar(vector<int> layerBreadth, int reservoirLayer, int _synapseBit
 	crossbarSize = size;
 	VectorXi actTemp(size);
 	for(int i = 0; i < crossbarSize; i++){
-		actTemp(i) = (rand() % 9) - 3;
+		actTemp(i) = (rand() % 15) - 5;
 		if(i < layerBreadth.at(layerBreadth.size() -1)){
 			actTemp(i) = 8;	
 		}
 	}
 	actFunctions = actTemp;
-	mutate(2);
+	mutate(4);
 	//cout << "crossbar size: "<<size <<endl;
 }
 
 void crossbar::mutate(int period){
-	//srand(time(NULL));
+	//time(NULL);
 	//cout <<" size " << crossbarSize <<endl;
-	for(int i = 0; i < crossbarSize; i++){
-		if(rand() % (5 * period) == 0){
+        for(int i = 0; i < crossbarSize; i++){
+		if(rand() % (period) == 0){
 			actFunctions(i) += (rand() % 3) - 1;
 			if(actFunctions(i) == -8){actFunctions(i)=-7;}
 			if(actFunctions(i) == 14){actFunctions(i)=13;}
